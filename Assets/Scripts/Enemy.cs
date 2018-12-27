@@ -4,48 +4,57 @@ using UnityEngine;
 
 public class Enemy : MovingObject {
 
+    public int damage;
+    private int health;
 
-	// Use this for initialization
-	protected override void Start () {
+    // Use this for initialization
+    protected override void Start () {
         base.Start();
+        health = 10;
 	}
 	
 	// Update is called once per frame
 	void Update () {
         if (!moving) {
-            int horiz = Random.Range(-1, 1);
-            int vert = Random.Range(-1, 1);
+            int horiz = Random.Range(-1, 2);
+            int vert = Random.Range(-1, 2);
             AttemptMove(horiz, vert);
         }
     }
 
-    protected override bool Move(int xDir, int yDir, out RaycastHit2D hit) {
-        Vector2 start = transform.position;
-        Vector2 end = start + new Vector2(xDir, yDir);
 
-        boxCollider.enabled = false;
-        hit = Physics2D.Linecast(start, end, blockingLayer);
-        boxCollider.enabled = true;
-
-        if (hit.transform == null) {
-            StartCoroutine(SmoothMovement(end));
-            return true;
-        } else return false;
-
-
+    public void TakeDamage(int damage) {
+        health -= damage;
+        if (health <= 0) {
+            Destroy(gameObject);
+        }
     }
 
 
-    protected override void onCantMove(Transform T) {
-        Debug.Log(T.name);
+    protected override bool MoveThrough(Transform T) {
+        //Debug.Log(T.name);
+        if (T == null) {
+            return true;
+        }
 
-        if (T.name == "Underbrush(Clone)") {
 
-            //Underbrush hitUnderbrush = T.GetComponent<Underbrush>() as Underbrush;
-            //hitUnderbrush.cutBrush();
+        switch (T.tag) {
+            case "Underbrush":
+                return true;
 
-            //updateStamina(stamina - 1);
-            //animator.setTrigger("playerChop");
+            case "Enemy":
+                return false;
+
+            case "Player":
+                Party party = T.GetComponent<Party>() as Party;
+                party.TakeDamage(damage);
+                return false;
+
+            case "Base":
+                return false;
+
+            default:
+                return true;
 
         }
 

@@ -64,6 +64,13 @@ public class BoardManager : MonoBehaviour {
                             if (((loc - center).sqrMagnitude > 25 || !isPOI) && POINT * Random.value < 0.98) {
                                 GameObject instance = Instantiate(underbrush, loc, Quaternion.identity) as GameObject;
                                 instance.transform.SetParent(boardHolder);
+
+                                if (Random.value > .99) {
+                                    GameObject enemy_instance = Instantiate(enemy, loc, Quaternion.identity) as GameObject;
+                                    enemy_instance.transform.SetParent(boardHolder);
+                                }
+
+
                             } else if (loc.Equals(center) && POItype < .25) {
                                 GameObject instance = Instantiate(POI, loc, Quaternion.identity) as GameObject;
                                 instance.transform.SetParent(boardHolder);

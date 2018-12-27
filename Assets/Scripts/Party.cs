@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Party : MovingObject {
 
     public Text staminaText;
+    public Text healthText;
     private int stamina;
     // private Animator animator;
 
@@ -15,22 +16,37 @@ public class Party : MovingObject {
 
 
 
-    protected override void onCantMove(Transform T) {
+    protected override bool MoveThrough(Transform T) {
         if (stamina <= 0)
-            return;
-        Debug.Log(T.name);
-
-        if (T.name == "Underbrush(Clone)") {
-
-            Underbrush hitUnderbrush = T.GetComponent<Underbrush>() as Underbrush;
-            hitUnderbrush.cutBrush();
-
-            updateStamina(stamina - 1);
-            //animator.setTrigger("playerChop");
-
+            return false;
+        //Debug.Log(T.name);
+        if (T == null) {
+            return true;
         }
 
+        Debug.Log(T.name);
+        switch (T.tag) {
+            case "Underbrush":
+                Underbrush hitUnderbrush = T.GetComponent<Underbrush>() as Underbrush;
+                hitUnderbrush.cutBrush();
 
+                updateStamina(stamina - 1);
+                //animator.setTrigger("playerChop");
+
+                return true;
+
+            case "Enemy":
+                Debug.Log("------");
+                Debug.Log(T.name);
+                Enemy enemy = T.GetComponent<Enemy>() as Enemy;
+                Debug.Log(enemy.name);
+                enemy.TakeDamage(strength);
+                return false;
+
+            default:
+                return true;
+
+        }
     }
 
     void clearFog() {
@@ -43,21 +59,19 @@ public class Party : MovingObject {
         }
     }
 
-
-
-
-    protected override void AttemptMove(int xDir, int yDir) {
-        
-
-        base.AttemptMove(xDir, yDir);
-
-        RaycastHit2D hit;
+    public void TakeDamage(int damage) {
+        health -= damage;
+        healthText.text = "Health: " + health;
     }
+
     // Use this for initialization
     protected override void Start () {
         //animator = GetComponent<Animator>();
         staminaText = GameObject.Find("StaminaText").GetComponent<Text>();
+        healthText = GameObject.Find("HealthText").GetComponent<Text>();
         updateStamina(100);
+        health = 100;
+        strength = 10;
         base.Start();
         clearFog();
 	}

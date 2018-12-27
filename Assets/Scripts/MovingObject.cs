@@ -38,35 +38,39 @@ public abstract class MovingObject : MonoBehaviour {
         moving = false;
     }
 
-    protected virtual bool Move (int xDir, int yDir, out RaycastHit2D hit) {
+    protected virtual bool PrepareMove (Vector2 start, Vector2 end) {
+
+        boxCollider.enabled = false;
+        RaycastHit2D hit = Physics2D.Linecast(start, end, blockingLayer);
+        boxCollider.enabled = true;
+
+        if (MoveThrough(hit.transform)) {
+            if (hit.transform != null) {
+                hit.transform.GetComponent<BoxCollider2D>().enabled = false;
+                bool can_move_temp = PrepareMove(start, end); //disable the box collider we can move through and retry
+                hit.transform.GetComponent<BoxCollider2D>().enabled = true;
+                return can_move_temp;
+            } else {
+                //StartCoroutine(SmoothMovement(end));
+                return true;
+            }
+        } else return false;
+    }
+
+    protected virtual bool AttemptMove (int xDir, int yDir) {
         Vector2 start = transform.position;
         Vector2 end = start + new Vector2(xDir, yDir);
 
-        boxCollider.enabled = false;
-        hit = Physics2D.Linecast(start, end, blockingLayer);
-        boxCollider.enabled = true;
-
-        if (hit.transform == null) {
+        if (PrepareMove(start, end)) {
             StartCoroutine(SmoothMovement(end));
             return true;
         } else return false;
 
-        
     }
 
-    protected virtual void AttemptMove(int xDir, int yDir) { 
-        
-        RaycastHit2D hit;
-        bool canMove = Move(xDir, yDir, out hit);
-        
-        if (!canMove && hit.transform != null) {
-            onCantMove(hit.transform);
-        }
-        
-    }
+    
 
-
-    protected abstract void onCantMove(Transform T);
+    protected abstract bool MoveThrough(Transform T);
     
 
 
