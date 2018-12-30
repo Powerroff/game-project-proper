@@ -30,6 +30,20 @@ public class Enemy : MovingObject {
         }
     }
 
+    protected override IEnumerator SmoothMovement(Vector3 end) {
+        moving = true;
+        float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
+
+        while (sqrRemainingDistance > float.Epsilon) {
+            Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, inverseMoveTime * Time.deltaTime);
+            rb2D.MovePosition(newPosition);
+            sqrRemainingDistance = (transform.position - end).sqrMagnitude;
+            yield return null;
+
+        }
+        yield return new WaitForSeconds(.5f);
+        moving = false;
+    }
 
     protected override bool MoveThrough(Transform T) {
         //Debug.Log(T.name);

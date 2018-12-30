@@ -17,11 +17,12 @@ public class Party : MovingObject {
 
 
     protected override bool MoveThrough(Transform T) {
-        if (stamina <= 0)
-            return false;
+        
         //Debug.Log(T.name);
         if (T == null) {
             return true;
+        }  else if (stamina <= 0) {
+            return false;
         }
 
         Debug.Log(T.name);
@@ -41,6 +42,9 @@ public class Party : MovingObject {
                 Enemy enemy = T.GetComponent<Enemy>() as Enemy;
                 Debug.Log(enemy.name);
                 enemy.TakeDamage(strength);
+                return false;
+
+            case "Impassable":
                 return false;
 
             default:
@@ -70,21 +74,32 @@ public class Party : MovingObject {
         staminaText = GameObject.Find("StaminaText").GetComponent<Text>();
         healthText = GameObject.Find("HealthText").GetComponent<Text>();
         updateStamina(100);
-        health = 100;
+        updateHealth(100);
         strength = 10;
         base.Start();
         clearFog();
 	}
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.tag == "Base") {
-            updateStamina(100);
+        switch (collision.tag) {
+            case "Base":
+                updateStamina(100);
+                updateHealth(100);
+                return;
+            default:
+                return;
+
         }
     }
 
     private void updateStamina(int newStamina) {
         stamina = newStamina;
         staminaText.text = "Stamina: " + stamina;
+    }
+
+    private void updateHealth(int newHealth) {
+        health = newHealth;
+        healthText.text = "Health: " + health;
     }
 
     // Update is called once per frame

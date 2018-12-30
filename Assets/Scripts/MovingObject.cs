@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class MovingObject : MonoBehaviour {
 
     //jank
-    public bool moving;
+    protected bool moving;
 
     public float moveTime; // Move time in seconds
     public LayerMask blockingLayer;
@@ -23,7 +23,7 @@ public abstract class MovingObject : MonoBehaviour {
         moving = false;
 	}
 	
-    protected IEnumerator SmoothMovement (Vector3 end) {
+    protected virtual IEnumerator SmoothMovement (Vector3 end) {
         moving = true;
         float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
 
@@ -34,7 +34,6 @@ public abstract class MovingObject : MonoBehaviour {
             yield return null;
             
         }
-
         moving = false;
     }
 
@@ -67,7 +66,6 @@ public abstract class MovingObject : MonoBehaviour {
         } else return false;
 
     }
-
     
 
     protected abstract bool MoveThrough(Transform T);

@@ -9,6 +9,7 @@ TagManager:
   - Fog
   - Underbrush
   - Enemy
+  - Impassable
   layers:
   - Default
   - TransparentFX
