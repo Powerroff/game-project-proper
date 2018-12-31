@@ -17,6 +17,6 @@ public class Underbrush : MonoBehaviour {
 
     public void cutBrush () {
         spriteRenderer.sprite = dmgSprite;
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 }

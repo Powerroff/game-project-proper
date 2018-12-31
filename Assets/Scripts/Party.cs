@@ -126,6 +126,7 @@ public class Party : MovingObject {
         if (horizontal != 0 || vertical != 0)
             if (!moving) {
                 clearFog();
+                bm.setActiveChunks(transform.position.x, transform.position.y);
                 //Debug.Log("Cleared Fog");
                 AttemptMove(horizontal, vertical);
             }

@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour {
 
-    public int columns = 8;
-    public int rows = 8;
+    public int columns;
+    public int rows;
+    public int chunksize = 40;
+    public GameObject[,] chunks;
 
     public GameObject underbrush;
     public GameObject party;
@@ -15,35 +17,52 @@ public class BoardManager : MonoBehaviour {
     public GameObject lake;
     public GameObject item;
     public GameObject enemy;
+    public GameObject chunkLoader;
 
     private Transform boardHolder;
 
+    public void updateChunk(float x, float y, GameObject obj) {
+        //Debug.Log("Updating at x = " + (int)x + ", y = " + (int)y);
+        int X = ((int)x + columns / 2 + 5) / chunksize;
+        int Y = ((int)y + rows / 2 + 5) / chunksize;
+        if (chunks[X, Y] == null) {
+            chunks[X,Y] = Instantiate(chunkLoader, Vector2.zero, Quaternion.identity) as GameObject;
+            chunks[X,Y].transform.SetParent(boardHolder);
+        }
+        obj.transform.SetParent(chunks[X,Y].transform);
+    }
+    public void setActiveChunks(float x, float y) {
+        //Debug.Log("setting actives");
+        int X = ((int)x + columns / 2 + 5) / chunksize;
+        int Y = ((int)y + rows / 2 + 5) / chunksize;
+        for (int i = 0; i < columns/chunksize; i++)
+            for (int j = 0; j < rows/chunksize; j++) {
+                if ((int)Mathf.Abs(X-i) + (int)Mathf.Abs(Y-j) > 2)
+                    StartCoroutine(chunks[i,j].GetComponent<ChunkLoader>().activate(false));
+                else {
+                    if (!chunks[i, j].GetComponent<ChunkLoader>().isActive)
+                        Debug.Log("Loading in New Chunks at (" + i + "," + j + ")");
+                    StartCoroutine(chunks[i, j].GetComponent<ChunkLoader>().activate(true));
+                    
+                }
+            }
+    }
+
+
     public void boardSetup() {
-        //for (int x = 0; x < columns; x++) {
-        //    for (int y = 0; y < rows; y++) {
-        //        int i = x - columns / 2;
-        //        int j = y - rows / 2;
 
-        //        if (i == 0 && j == 0) {
-        //            gameobject partyinstance = instantiate(party, new vector3(i, j, 0), quaternion.identity) as gameobject;
-        //            partyinstance.transform.setparent(boardholder);
-        //            gameobject baseinstance = instantiate(partybase, new vector3(i, j, 0), quaternion.identity) as gameobject;
-        //            baseinstance.transform.setparent(boardholder);
-        //        } else {
-        //            gameobject toinstantiate = underbrush;
-        //            gameobject instance = instantiate(toinstantiate, new vector3(i, j, 0f), quaternion.identity) as gameobject;
-        //            instance.transform.setparent(boardholder);
-        //        }
-        //    }
-        //}
+        chunks = new GameObject[columns/chunksize + 1, rows/chunksize + 1];
 
-
-        int chunksize = 40;
 
         for (int x = 0; x < columns / chunksize; x++) {
             for (int y = 0; y < rows / chunksize; y++) {
+                chunks[x, y] = Instantiate(chunkLoader, Vector2.zero, Quaternion.identity) as GameObject;
+                chunks[x, y].transform.SetParent(boardHolder);
+
+
+
                 int i = chunksize * x - columns / 2;
-                int j = chunksize * y - columns / 2;
+                int j = chunksize * y - rows / 2;
 
                 float POItype = Random.value;
                 bool isPOI = (POItype < .5);
@@ -56,7 +75,7 @@ public class BoardManager : MonoBehaviour {
                     for (int yPos = j; yPos < j + chunksize; yPos++) {
                         Vector3 loc = new Vector3(xPos, yPos, 0);
                         GameObject fogInstance = Instantiate(fog, loc, Quaternion.identity) as GameObject;
-                        fogInstance.transform.SetParent(boardHolder);
+                        fogInstance.transform.SetParent(chunks[x, y].transform);
 
                         if (xPos == 0 && yPos == 0) {
                             GameObject partyInstance = Instantiate(party, new Vector3(i, j, 0), Quaternion.identity) as GameObject;
@@ -67,25 +86,26 @@ public class BoardManager : MonoBehaviour {
                             
                             if (((loc - center).sqrMagnitude > 25 || !isPOI) && POINT * Random.value < 0.98) {
                                 GameObject instance = Instantiate(underbrush, loc, Quaternion.identity) as GameObject;
-                                instance.transform.SetParent(boardHolder);
+                                instance.transform.SetParent(chunks[x, y].transform);
+
 
                                 if (Random.value > .99) {
                                     GameObject enemy_instance = Instantiate(enemy, loc, Quaternion.identity) as GameObject;
-                                    enemy_instance.transform.SetParent(boardHolder);
+                                    enemy_instance.transform.SetParent(chunks[x, y].transform);
                                 }
 
 
                             } else if (loc.Equals(center) && POItype < .1) {
                                 GameObject instance = Instantiate(POI, loc, Quaternion.identity) as GameObject;
-                                instance.transform.SetParent(boardHolder);
+                                instance.transform.SetParent(chunks[x, y].transform);
                             } else if (isPOI && POItype > .35) {
                                 if (loc.Equals(center)) {
                                     GameObject instance = Instantiate(item, loc, Quaternion.identity) as GameObject;
-                                    instance.transform.SetParent(boardHolder);
+                                    instance.transform.SetParent(chunks[x, y].transform);
                                 }
                             } else if (isPOI && POItype >= .1) {
                                 GameObject instance = Instantiate(lake, loc, Quaternion.identity) as GameObject;
-                                instance.transform.SetParent(boardHolder);
+                                instance.transform.SetParent(chunks[x, y].transform);
                             }
                             
                         }

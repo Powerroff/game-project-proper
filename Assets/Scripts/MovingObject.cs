@@ -13,7 +13,7 @@ public abstract class MovingObject : MonoBehaviour {
     protected BoxCollider2D boxCollider;
     protected Rigidbody2D rb2D;
     protected float inverseMoveTime;
-
+    protected BoardManager bm;
 
 	// Use this for initialization
 	protected virtual void Start () {
@@ -21,7 +21,10 @@ public abstract class MovingObject : MonoBehaviour {
         rb2D = GetComponent<Rigidbody2D>();
         inverseMoveTime = 1f / moveTime;
         moving = false;
-	}
+        bm = GameObject.FindObjectOfType<BoardManager>() as BoardManager;
+        bm.updateChunk(transform.position.x, transform.position.y, gameObject);
+
+    }
 	
     protected virtual IEnumerator SmoothMovement (Vector3 end) {
         moving = true;
@@ -32,8 +35,9 @@ public abstract class MovingObject : MonoBehaviour {
             rb2D.MovePosition(newPosition);
             sqrRemainingDistance = (transform.position - end).sqrMagnitude;
             yield return null;
-            
+
         }
+        bm.updateChunk(transform.position.x, transform.position.y, gameObject);
         moving = false;
     }
 

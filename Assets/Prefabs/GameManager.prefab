@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   columns: 200
   rows: 200
+  chunksize: 40
   underbrush: {fileID: 1704595100362172, guid: 001a7d6e6cdf69a46baf80b0d88f806d, type: 3}
   party: {fileID: 1490966851148842, guid: eea64a0b42ea934418cc5ab8a8ef400a, type: 3}
   partyBase: {fileID: 1407087367013436, guid: 37afc7e510a54d84db9066d9352b6fd1, type: 3}
@@ -54,6 +55,8 @@ MonoBehaviour:
   lake: {fileID: 1916625614551290, guid: d1d6a61be6e0b1f429551a7aed159e87, type: 3}
   item: {fileID: 2973045741843010634, guid: abf7841f615732849b88c7c1f9e0f097, type: 3}
   enemy: {fileID: 3239615047546714138, guid: 9772c4fffa7be9348a4c1c6589d7b7f5, type: 3}
+  chunkLoader: {fileID: 1668729393309493083, guid: f4d20259d85fe674f9ca54b0581f7d37,
+    type: 3}
 --- !u!114 &114206794134703260
 MonoBehaviour:
   m_ObjectHideFlags: 0
