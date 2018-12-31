@@ -54,13 +54,17 @@ public class BoardManager : MonoBehaviour {
 
                 for (int xPos = i; xPos < i + chunksize; xPos ++)
                     for (int yPos = j; yPos < j + chunksize; yPos++) {
+                        Vector3 loc = new Vector3(xPos, yPos, 0);
+                        GameObject fogInstance = Instantiate(fog, loc, Quaternion.identity) as GameObject;
+                        fogInstance.transform.SetParent(boardHolder);
+
                         if (xPos == 0 && yPos == 0) {
                             GameObject partyInstance = Instantiate(party, new Vector3(i, j, 0), Quaternion.identity) as GameObject;
                             partyInstance.transform.SetParent(boardHolder);
                             GameObject baseInstance = Instantiate(partyBase, new Vector3(i, j, 0), Quaternion.identity) as GameObject;
                             baseInstance.transform.SetParent(boardHolder);
                         } else {
-                            Vector3 loc = new Vector3(xPos, yPos, 0);
+                            
                             if (((loc - center).sqrMagnitude > 25 || !isPOI) && POINT * Random.value < 0.98) {
                                 GameObject instance = Instantiate(underbrush, loc, Quaternion.identity) as GameObject;
                                 instance.transform.SetParent(boardHolder);
@@ -71,15 +75,19 @@ public class BoardManager : MonoBehaviour {
                                 }
 
 
-                            } else if (loc.Equals(center) && POItype < .25) {
+                            } else if (loc.Equals(center) && POItype < .1) {
                                 GameObject instance = Instantiate(POI, loc, Quaternion.identity) as GameObject;
                                 instance.transform.SetParent(boardHolder);
-                            } else if (isPOI && POItype > .25) {
+                            } else if (isPOI && POItype > .35) {
+                                if (loc.Equals(center)) {
+                                    GameObject instance = Instantiate(item, loc, Quaternion.identity) as GameObject;
+                                    instance.transform.SetParent(boardHolder);
+                                }
+                            } else if (isPOI && POItype >= .1) {
                                 GameObject instance = Instantiate(lake, loc, Quaternion.identity) as GameObject;
                                 instance.transform.SetParent(boardHolder);
                             }
-                            //GameObject fogInstance = Instantiate(fog, loc, Quaternion.identity) as GameObject;
-                            //fogInstance.transform.SetParent(boardHolder);
+                            
                         }
                     }
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 212554049528599558}
   - component: {fileID: 61855498554146946}
   - component: {fileID: 114702253013916824}
-  - component: {fileID: 50547067685995796}
+  - component: {fileID: 6262939904582599931}
   m_Layer: 0
   m_Name: Party
   m_TagString: Player
@@ -121,13 +121,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bdb7088a6a18a24b85d18c3db7d5a70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moving: 0
   moveTime: 0.1
   blockingLayer:
     serializedVersion: 2
     m_Bits: 1
   staminaText: {fileID: 0}
---- !u!50 &50547067685995796
+  healthText: {fileID: 0}
+  strengthText: {fileID: 0}
+--- !u!50 &6262939904582599931
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0

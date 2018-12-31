@@ -7,6 +7,7 @@ public class Party : MovingObject {
 
     public Text staminaText;
     public Text healthText;
+    public Text strengthText;
     private int stamina;
     // private Animator animator;
 
@@ -25,7 +26,7 @@ public class Party : MovingObject {
             return false;
         }
 
-        Debug.Log(T.name);
+        //Debug.Log(T.name);
         switch (T.tag) {
             case "Underbrush":
                 Underbrush hitUnderbrush = T.GetComponent<Underbrush>() as Underbrush;
@@ -37,10 +38,10 @@ public class Party : MovingObject {
                 return true;
 
             case "Enemy":
-                Debug.Log("------");
-                Debug.Log(T.name);
+                //Debug.Log("------");
+                //Debug.Log(T.name);
                 Enemy enemy = T.GetComponent<Enemy>() as Enemy;
-                Debug.Log(enemy.name);
+                //Debug.Log(enemy.name);
                 enemy.TakeDamage(strength);
                 return false;
 
@@ -49,6 +50,23 @@ public class Party : MovingObject {
 
             default:
                 return true;
+
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        switch (collision.tag) {
+            case "Base":
+                updateStamina(100);
+                updateHealth(100);
+                return;
+            case "Item":
+                strength += 10;
+                Destroy(collision.gameObject);
+                strengthText.text = "Strength: " + strength;
+                return;
+            default:
+                return;
 
         }
     }
@@ -73,24 +91,15 @@ public class Party : MovingObject {
         //animator = GetComponent<Animator>();
         staminaText = GameObject.Find("StaminaText").GetComponent<Text>();
         healthText = GameObject.Find("HealthText").GetComponent<Text>();
+        strengthText = GameObject.Find("StrengthText").GetComponent<Text>();
         updateStamina(100);
         updateHealth(100);
         strength = 10;
+        strengthText.text = "Strength: " + strength;
         base.Start();
         clearFog();
 	}
 
-    private void OnTriggerEnter2D(Collider2D collision) {
-        switch (collision.tag) {
-            case "Base":
-                updateStamina(100);
-                updateHealth(100);
-                return;
-            default:
-                return;
-
-        }
-    }
 
     private void updateStamina(int newStamina) {
         stamina = newStamina;
@@ -115,8 +124,10 @@ public class Party : MovingObject {
 
         //if (horizontal != 0) vertical = 0;
         if (horizontal != 0 || vertical != 0)
-            if (!moving)
-                //clearFog();
+            if (!moving) {
+                clearFog();
+                //Debug.Log("Cleared Fog");
                 AttemptMove(horizontal, vertical);
+            }
 	}
 }

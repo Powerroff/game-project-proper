@@ -10,7 +10,7 @@ public class Enemy : MovingObject {
     // Use this for initialization
     protected override void Start () {
         base.Start();
-        health = 10;
+        health = 20;
 	}
 	
 	// Update is called once per frame
