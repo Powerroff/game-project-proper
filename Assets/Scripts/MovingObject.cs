@@ -38,22 +38,18 @@ public abstract class MovingObject : MonoBehaviour {
     }
 
     protected virtual bool PrepareMove (Vector2 start, Vector2 end) {
+        
+        RaycastHit2D[] hits = Physics2D.LinecastAll(start, end, blockingLayer);
 
-        boxCollider.enabled = false;
-        RaycastHit2D hit = Physics2D.Linecast(start, end, blockingLayer);
-        boxCollider.enabled = true;
-
-        if (MoveThrough(hit.transform)) {
-            if (hit.transform != null) {
-                hit.transform.GetComponent<BoxCollider2D>().enabled = false;
-                bool can_move_temp = PrepareMove(start, end); //disable the box collider we can move through and retry
-                hit.transform.GetComponent<BoxCollider2D>().enabled = true;
-                return can_move_temp;
-            } else {
-                //StartCoroutine(SmoothMovement(end));
-                return true;
-            }
-        } else return false;
+        bool can_move = true;
+        foreach (RaycastHit2D hit in hits) {
+            if (hit.transform.Equals(transform))
+                continue;
+            else
+                can_move = (can_move && MoveThrough(hit.transform));
+        }
+        return can_move;
+        
     }
 
     protected virtual bool AttemptMove (int xDir, int yDir) {
