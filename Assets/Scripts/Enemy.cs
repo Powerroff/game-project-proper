@@ -6,6 +6,7 @@ public class Enemy : MovingObject {
 
     public int damage;
     private int health;
+    public GameObject scrap;
 
     // Use this for initialization
     protected override void Start () {
@@ -26,8 +27,16 @@ public class Enemy : MovingObject {
     public void TakeDamage(int damage) {
         health -= damage;
         if (health <= 0) {
-            Destroy(gameObject);
+            OnDestroy();
         }
+    }
+
+    protected void OnDestroy() {
+        Random.InitState(Time.frameCount+(int)Time.time);
+        if (Random.value < .25) {
+            Instantiate(scrap, transform.position, Quaternion.identity);
+        }
+        Destroy(gameObject);
     }
 
     protected override IEnumerator SmoothMovement(Vector3 end) {
@@ -35,9 +44,11 @@ public class Enemy : MovingObject {
         float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
 
         while (sqrRemainingDistance > float.Epsilon) {
-            Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, inverseMoveTime * Time.deltaTime);
-            rb2D.MovePosition(newPosition);
-            sqrRemainingDistance = (transform.position - end).sqrMagnitude;
+            if (Time.timeScale > .75f) {
+                Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, inverseMoveTime * Time.deltaTime);
+                rb2D.MovePosition(newPosition);
+                sqrRemainingDistance = (transform.position - end).sqrMagnitude;
+            }
             yield return null;
 
         }

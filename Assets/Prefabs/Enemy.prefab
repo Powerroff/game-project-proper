@@ -125,6 +125,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1025
   damage: 5
+  scrap: {fileID: 9120819231409598550, guid: 831bffc125c32e245a3d87ccdca46bb2, type: 3}
 --- !u!50 &4441215141605348202
 Rigidbody2D:
   serializedVersion: 4

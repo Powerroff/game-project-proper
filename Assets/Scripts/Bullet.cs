@@ -14,7 +14,7 @@ public class Bullet : MovingObject
     protected override bool MoveThrough(Transform T) {
         if (T == null)
             return true;
-        Debug.Log("Moving through: " + T.tag);
+        //Debug.Log("Moving through: " + T.tag);
         switch (T.tag) {
             case ("Enemy"):
                 Enemy e = T.GetComponent<Enemy>();

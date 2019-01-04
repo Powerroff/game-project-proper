@@ -129,6 +129,7 @@ MonoBehaviour:
   healthText: {fileID: 0}
   strengthText: {fileID: 0}
   bullet: {fileID: 8635895661018318417, guid: b1729f44f3106ac4e85e0d58e88c609c, type: 3}
+  inventory: 
 --- !u!50 &6262939904582599931
 Rigidbody2D:
   serializedVersion: 4
@@ -177,7 +178,7 @@ Transform:
   m_GameObject: {fileID: 1888260509096096}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -14.5, y: 4.5, z: -10}
-  m_LocalScale: {x: 10, y: 10, z: 1}
+  m_LocalScale: {x: 7, y: 10, z: 1}
   m_Children: []
   m_Father: {fileID: 4324671692758842}
   m_RootOrder: 0

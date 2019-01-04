@@ -28,9 +28,11 @@ public abstract class MovingObject : MonoBehaviour {
         float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
 
         while (sqrRemainingDistance > float.Epsilon) {
-            Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, inverseMoveTime * Time.deltaTime);
-            rb2D.MovePosition(newPosition);
-            sqrRemainingDistance = (transform.position - end).sqrMagnitude;
+            if (Time.timeScale > .75f) {
+                Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, inverseMoveTime * Time.deltaTime);
+                rb2D.MovePosition(newPosition);
+                sqrRemainingDistance = (transform.position - end).sqrMagnitude;
+            }
             yield return null;
             
         }

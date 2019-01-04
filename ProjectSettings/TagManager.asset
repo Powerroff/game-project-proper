@@ -12,6 +12,7 @@ TagManager:
   - Impassable
   - Item
   - Bullet
+  - Scrap
   layers:
   - Default
   - TransparentFX

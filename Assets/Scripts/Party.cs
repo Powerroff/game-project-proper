@@ -5,10 +5,12 @@ using UnityEngine.UI;
 
 public class Party : MovingObject {
 
+    
     public Text staminaText;
     public Text healthText;
     public Text strengthText;
     public GameObject bullet;
+    public int[] inventory;
     private int stamina;
     private bool shooting;
     // private Animator animator;
@@ -16,7 +18,7 @@ public class Party : MovingObject {
     private int health;
     private int strength; //damage?
     //other stats probably
-
+    private enum inv_items { Scrap };
 
 
     protected override bool MoveThrough(Transform T) {
@@ -64,6 +66,10 @@ public class Party : MovingObject {
                 Destroy(collision.gameObject);
                 strengthText.text = "Strength: " + strength;
                 return;
+            case "Scrap":
+                inventory[(int)inv_items.Scrap]++;
+                Destroy(collision.gameObject);
+                return;
             default:
                 return;
 
@@ -96,6 +102,7 @@ public class Party : MovingObject {
         strength = 10;
         shooting = false;
         strengthText.text = "Strength: " + strength;
+        inventory = new int[10];
         base.Start();
         clearFog();
 	}
@@ -118,7 +125,8 @@ public class Party : MovingObject {
 
     // Update is called once per frame
     void Update () {
-
+        if (Time.timeScale < 0.75f)
+            return;
         int horizontal = 0;
         int vertical = 0;
         int shootingXDir = 0;
@@ -131,7 +139,7 @@ public class Party : MovingObject {
         if (shootingXDir != 0 || shootingYDir != 0) {
             if (!shooting) {
                 shooting = true;
-                Bullet instance = Instantiate(bullet, transform.position, Quaternion.identity).GetComponent<Bullet>();
+                Bullet instance = Instantiate(bullet, transform.position, Quaternion.FromToRotation(new Vector3(1,0),new Vector3(shootingXDir, shootingYDir))).GetComponent<Bullet>();
                 instance.damage = strength;
                 instance.xDir = shootingXDir;
                 instance.yDir = shootingYDir;

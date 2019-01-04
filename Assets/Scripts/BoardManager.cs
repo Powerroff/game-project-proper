@@ -15,6 +15,7 @@ public class BoardManager : MonoBehaviour {
     public GameObject lake;
     public GameObject item;
     public GameObject enemy;
+    public GameObject pauseMenu;
 
     private Transform boardHolder;
 
@@ -104,10 +105,12 @@ public class BoardManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         boardHolder = transform;
+        pauseMenu = GameObject.Find("PauseMenu");
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
 }
