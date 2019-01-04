@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54f9be2fac8f5e9488e9ee6e1a2b1adf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  columns: 400
-  rows: 400
+  columns: 200
+  rows: 200
   underbrush: {fileID: 1704595100362172, guid: 001a7d6e6cdf69a46baf80b0d88f806d, type: 3}
   party: {fileID: 1490966851148842, guid: eea64a0b42ea934418cc5ab8a8ef400a, type: 3}
   partyBase: {fileID: 1407087367013436, guid: 37afc7e510a54d84db9066d9352b6fd1, type: 3}

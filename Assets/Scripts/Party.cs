@@ -8,7 +8,9 @@ public class Party : MovingObject {
     public Text staminaText;
     public Text healthText;
     public Text strengthText;
+    public GameObject bullet;
     private int stamina;
+    private bool shooting;
     // private Animator animator;
 
     private int health;
@@ -38,11 +40,8 @@ public class Party : MovingObject {
                 return true;
 
             case "Enemy":
-                //Debug.Log("------");
-                //Debug.Log(T.name);
-                Enemy enemy = T.GetComponent<Enemy>() as Enemy;
-                //Debug.Log(enemy.name);
-                enemy.TakeDamage(strength);
+                //Enemy enemy = T.GetComponent<Enemy>() as Enemy;
+                //enemy.TakeDamage(strength);
                 return false;
 
             case "Impassable":
@@ -95,6 +94,7 @@ public class Party : MovingObject {
         updateStamina(100);
         updateHealth(100);
         strength = 10;
+        shooting = false;
         strengthText.text = "Strength: " + strength;
         base.Start();
         clearFog();
@@ -111,14 +111,34 @@ public class Party : MovingObject {
         healthText.text = "Health: " + health;
     }
 
+    private IEnumerator Reload(float seconds) {
+        yield return new WaitForSeconds(seconds);
+        shooting = false;
+    }
+
     // Update is called once per frame
     void Update () {
 
         int horizontal = 0;
         int vertical = 0;
+        int shootingXDir = 0;
+        int shootingYDir = 0;
 
         horizontal = (int)Input.GetAxisRaw("Horizontal");
         vertical = (int)Input.GetAxisRaw("Vertical");
+        shootingXDir = (int)Input.GetAxisRaw("Fire Horizontal");
+        shootingYDir = (int)Input.GetAxisRaw("Fire Vertical");
+        if (shootingXDir != 0 || shootingYDir != 0) {
+            if (!shooting) {
+                shooting = true;
+                Bullet instance = Instantiate(bullet, transform.position, Quaternion.identity).GetComponent<Bullet>();
+                instance.damage = strength;
+                instance.xDir = shootingXDir;
+                instance.yDir = shootingYDir;
+                instance.lifespan = 7;
+                StartCoroutine(Reload(.25f));
+            }
+        }
 
         //Debug.Log(stamina);
 

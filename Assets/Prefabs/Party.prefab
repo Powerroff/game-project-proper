@@ -128,6 +128,7 @@ MonoBehaviour:
   staminaText: {fileID: 0}
   healthText: {fileID: 0}
   strengthText: {fileID: 0}
+  bullet: {fileID: 8635895661018318417, guid: b1729f44f3106ac4e85e0d58e88c609c, type: 3}
 --- !u!50 &6262939904582599931
 Rigidbody2D:
   serializedVersion: 4
@@ -207,7 +208,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
