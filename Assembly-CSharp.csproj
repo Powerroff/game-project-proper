@@ -68,6 +68,8 @@
     <Compile Include="Assets\Scripts\Loader.cs" />
     <Compile Include="Assets\Scripts\MovingObject.cs" />
     <Compile Include="Assets\Scripts\Party.cs" />
+    <Compile Include="Assets\Scripts\Rift.cs" />
+    <Compile Include="Assets\Scripts\RiftSnake.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
     <Compile Include="Assets\Scripts\Underbrush.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">

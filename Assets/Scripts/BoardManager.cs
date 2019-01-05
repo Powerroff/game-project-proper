@@ -16,6 +16,8 @@ public class BoardManager : MonoBehaviour {
     public GameObject item;
     public GameObject enemy;
     public GameObject pauseMenu;
+    public GameObject rift;
+    //public GameObject riftEnemy;
 
     private Transform boardHolder;
 
@@ -60,36 +62,37 @@ public class BoardManager : MonoBehaviour {
                         fogInstance.transform.SetParent(boardHolder);
 
                         if (xPos == 0 && yPos == 0) {
-                            GameObject partyInstance = Instantiate(party, new Vector3(i, j, 0), Quaternion.identity) as GameObject;
+                            GameObject partyInstance = Instantiate(party, loc, Quaternion.identity) as GameObject;
                             partyInstance.transform.SetParent(boardHolder);
-                            GameObject baseInstance = Instantiate(partyBase, new Vector3(i, j, 0), Quaternion.identity) as GameObject;
+                            GameObject baseInstance = Instantiate(partyBase, loc, Quaternion.identity) as GameObject;
                             baseInstance.transform.SetParent(boardHolder);
-                        } else {
-                            
-                            if (((loc - center).sqrMagnitude > 25 || !isPOI) && POINT * Random.value < 0.98) {
-                                GameObject instance = Instantiate(underbrush, loc, Quaternion.identity) as GameObject;
-                                instance.transform.SetParent(boardHolder);
+                        } else if (((loc - center).sqrMagnitude > 25 || !isPOI) && POINT * Random.value < 0.98) {
+                            GameObject instance = Instantiate(underbrush, loc, Quaternion.identity) as GameObject;
+                            instance.transform.SetParent(boardHolder);
 
-                                if (Random.value > .99) {
-                                    GameObject enemy_instance = Instantiate(enemy, loc, Quaternion.identity) as GameObject;
-                                    enemy_instance.transform.SetParent(boardHolder);
-                                }
+                            if (Random.value > .99) {
+                                GameObject enemy_instance = Instantiate(enemy, loc, Quaternion.identity) as GameObject;
+                                enemy_instance.transform.SetParent(boardHolder);
+                            }
 
 
-                            } else if (loc.Equals(center) && POItype < .1) {
+                        } else if (loc.Equals(center) && POItype < 0) {
                                 GameObject instance = Instantiate(POI, loc, Quaternion.identity) as GameObject;
                                 instance.transform.SetParent(boardHolder);
-                            } else if (isPOI && POItype > .35) {
-                                if (loc.Equals(center)) {
-                                    GameObject instance = Instantiate(item, loc, Quaternion.identity) as GameObject;
-                                    instance.transform.SetParent(boardHolder);
-                                }
-                            } else if (isPOI && POItype >= .1) {
-                                GameObject instance = Instantiate(lake, loc, Quaternion.identity) as GameObject;
+                        } else if (loc.Equals(center) && POItype < 1) {
+                            GameObject instance = Instantiate(rift, loc, Quaternion.identity) as GameObject;
+                            instance.transform.SetParent(boardHolder);
+                        } else if (isPOI && POItype < 1) {
+                            if (loc.Equals(center)) {
+                                GameObject instance = Instantiate(item, loc, Quaternion.identity) as GameObject;
                                 instance.transform.SetParent(boardHolder);
                             }
-                            
+                        } else if (isPOI && POItype <= 1) {
+                            GameObject instance = Instantiate(lake, loc, Quaternion.identity) as GameObject;
+                            instance.transform.SetParent(boardHolder);
                         }
+                            
+                        
                     }
 
 

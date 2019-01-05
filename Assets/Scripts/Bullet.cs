@@ -16,16 +16,22 @@ public class Bullet : MovingObject
             return true;
         //Debug.Log("Moving through: " + T.tag);
         switch (T.tag) {
-            case ("Enemy"):
+            case "RiftEnemy":
+                RiftSnake re = T.GetComponent<RiftSnake>();
+                re.TakeDamage(damage);
+                Destroy(gameObject);
+                return false;
+            case "Enemy":
                 Enemy e = T.GetComponent<Enemy>();
                 e.TakeDamage(damage);
                 Destroy(gameObject);
                 return false;
-            case ("Underbrush"):
+
+            case "Underbrush":
                 return true;
-            case ("Impassable"):
+            case "Impassable":
                 return true;
-            case ("Fog"):
+            case "Fog":
                 return true;
 
 

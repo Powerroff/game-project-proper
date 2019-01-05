@@ -7,6 +7,8 @@ public class Enemy : MovingObject {
     public int damage;
     private int health;
     public GameObject scrap;
+    public Sprite defaultSprite;
+    public Sprite damageSprite;
 
     // Use this for initialization
     protected override void Start () {
@@ -29,6 +31,12 @@ public class Enemy : MovingObject {
         if (health <= 0) {
             OnDestroy();
         }
+        StartCoroutine(DamageAnim());
+    }
+    protected IEnumerator DamageAnim() {
+        GetComponent<SpriteRenderer>().sprite = damageSprite;
+        yield return new WaitForSeconds(.25f);
+        GetComponent<SpriteRenderer>().sprite = defaultSprite;
     }
 
     protected void OnDestroy() {
@@ -38,23 +46,7 @@ public class Enemy : MovingObject {
         }
         Destroy(gameObject);
     }
-
-    protected override IEnumerator SmoothMovement(Vector3 end) {
-        moving = true;
-        float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
-
-        while (sqrRemainingDistance > float.Epsilon) {
-            if (Time.timeScale > .75f) {
-                Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, inverseMoveTime * Time.deltaTime);
-                rb2D.MovePosition(newPosition);
-                sqrRemainingDistance = (transform.position - end).sqrMagnitude;
-            }
-            yield return null;
-
-        }
-        yield return new WaitForSeconds(.5f);
-        moving = false;
-    }
+   
 
     protected override bool MoveThrough(Transform T) {
         //Debug.Log(T.name);

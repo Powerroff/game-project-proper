@@ -13,6 +13,7 @@ TagManager:
   - Item
   - Bullet
   - Scrap
+  - RiftEnemy
   layers:
   - Default
   - TransparentFX

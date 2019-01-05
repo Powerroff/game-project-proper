@@ -40,7 +40,7 @@ public class Party : MovingObject {
                 //animator.setTrigger("playerChop");
 
                 return true;
-
+            case "RiftEnemy":
             case "Enemy":
                 //Enemy enemy = T.GetComponent<Enemy>() as Enemy;
                 //enemy.TakeDamage(strength);
@@ -82,6 +82,10 @@ public class Party : MovingObject {
             GameObject gameObject = collider.gameObject;
             if (gameObject.tag == "Fog") {
                 Destroy(gameObject);
+            }
+            if (gameObject.tag == "RiftSnake") {
+                RiftSnake rs = gameObject.GetComponent<RiftSnake>();
+                rs.seePlayer((Vector2)transform.position);
             }
         }
     }

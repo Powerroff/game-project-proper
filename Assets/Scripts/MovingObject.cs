@@ -8,6 +8,7 @@ public abstract class MovingObject : MonoBehaviour {
     protected bool moving;
 
     public float moveTime; // Move time in seconds
+    public float movePauseTime;
     public LayerMask blockingLayer;
 
     protected BoxCollider2D boxCollider;
@@ -36,6 +37,11 @@ public abstract class MovingObject : MonoBehaviour {
             yield return null;
             
         }
+        StartCoroutine(EndMovement());
+    }
+
+    protected virtual IEnumerator EndMovement() {
+        yield return new WaitForSeconds(movePauseTime);
         moving = false;
     }
 
@@ -61,7 +67,9 @@ public abstract class MovingObject : MonoBehaviour {
         if (PrepareMove(start, end)) {
             StartCoroutine(SmoothMovement(end));
             return true;
-        } else return false;
+        } else {
+            return false;
+        }
 
     }
     
