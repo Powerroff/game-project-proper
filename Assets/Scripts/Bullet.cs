@@ -9,6 +9,8 @@ public class Bullet : MovingObject
     public int lifespan;
     public int xDir;
     public int yDir;
+    public Sprite default_bullet;
+    public Sprite power_bullet;
     
 
     protected override bool MoveThrough(Transform T) {

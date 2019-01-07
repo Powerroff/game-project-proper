@@ -11,6 +11,7 @@ public class Party : MovingObject {
     public Text strengthText;
     public GameObject bullet;
     public int[] inventory;
+    public Deck cards;
     private int stamina;
     private bool shooting;
     // private Animator animator;
@@ -108,6 +109,8 @@ public class Party : MovingObject {
         inventory = new int[10];
         base.Start();
         clearFog();
+        cards = new Deck();
+        cards.init_basic_decks();
 	}
 
 
@@ -142,12 +145,16 @@ public class Party : MovingObject {
         if (shootingXDir != 0 || shootingYDir != 0) {
             if (!shooting) {
                 shooting = true;
+                Deck.Card c = Deck.pop(cards.up_deck);
+                Deck.Update_Panel(cards.up_deck, cards.up_panel);
                 Bullet instance = Instantiate(bullet, transform.position, Quaternion.FromToRotation(new Vector3(1,0),new Vector3(shootingXDir, shootingYDir))).GetComponent<Bullet>();
-                instance.damage = strength;
+                instance.damage = c.damage;
+                if (instance.damage > 15)
+                    instance.GetComponent<SpriteRenderer>().sprite = instance.power_bullet;
                 instance.xDir = shootingXDir;
                 instance.yDir = shootingYDir;
                 instance.lifespan = 7;
-                StartCoroutine(Reload(.25f));
+                StartCoroutine(Reload(c.reload));
             }
         }
 
