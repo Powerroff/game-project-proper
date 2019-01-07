@@ -22,7 +22,10 @@ public class Party : MovingObject {
 
 
     protected override bool MoveThrough(Transform T) {
-        
+
+        if ((transform.position - T.position).sqrMagnitude < .25)
+            return true; //Move off of any object you accidentally overlapped
+
         //Debug.Log(T.name);
         if (T == null) {
             return true;
@@ -82,10 +85,6 @@ public class Party : MovingObject {
             GameObject gameObject = collider.gameObject;
             if (gameObject.tag == "Fog") {
                 Destroy(gameObject);
-            }
-            if (gameObject.tag == "RiftSnake") {
-                RiftSnake rs = gameObject.GetComponent<RiftSnake>();
-                rs.seePlayer((Vector2)transform.position);
             }
         }
     }

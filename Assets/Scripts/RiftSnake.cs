@@ -6,10 +6,12 @@ public class RiftSnake : MovingObject {
 
     public int damage;
     public int health;
+    public int homeRadiusSq;
+    public int detectionRadiusSq;
+    public int territoryRadiusSq;
     private Vector2 parentLoc;
-    public Vector2 playerLoc;
-    private float seenPlayerTime;
     public GameObject scrap;
+    public GameObject party;
     public Sprite defaultSprite;
     public Sprite damageSprite;
 
@@ -17,15 +19,18 @@ public class RiftSnake : MovingObject {
     protected override void Start() {
         base.Start();
         parentLoc = transform.parent.position;
-        seenPlayerTime = float.MinValue;
     }
 
     // Update is called once per frame
     void Update() {
-        if (!moving) {
-            if (Time.time - seenPlayerTime < 3)
-                MoveToward(playerLoc);
-            else if (((Vector2)transform.position - parentLoc).sqrMagnitude > 20)
+        if (party == null)
+            party = GameObject.FindGameObjectWithTag("Player");
+        else if (!moving) {
+            if (((Vector2)transform.position - parentLoc).sqrMagnitude > territoryRadiusSq)
+                MoveToward(parentLoc);
+            else if ((transform.position - party.transform.position).sqrMagnitude < detectionRadiusSq)
+                MoveToward(party.transform.position);
+            else if (((Vector2)transform.position - parentLoc).sqrMagnitude > homeRadiusSq)
                 MoveToward(parentLoc);
             else {
                 int horiz = Random.Range(-1, 2);
@@ -42,11 +47,6 @@ public class RiftSnake : MovingObject {
             return;
         dir.Normalize();
         AttemptMove(Mathf.Round(dir.x), Mathf.Round(dir.y));
-    }
-
-    public void seePlayer(Vector2 position) {
-        seenPlayerTime = Time.time;
-        playerLoc = position;
     }
     
 
@@ -78,6 +78,9 @@ public class RiftSnake : MovingObject {
             return true;
         }
 
+        if ((transform.position - T.position).sqrMagnitude < .25)
+            return true; //Move off of any object you accidentally overlapped
+
 
         switch (T.tag) {
             case "Underbrush":
@@ -87,7 +90,7 @@ public class RiftSnake : MovingObject {
                 return false;
 
             case "RiftSnake":
-                return true;
+                return false;
 
             case "Player":
                 Party party = T.GetComponent<Party>() as Party;

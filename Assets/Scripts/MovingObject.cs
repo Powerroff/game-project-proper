@@ -25,7 +25,6 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 	
     protected virtual IEnumerator SmoothMovement (Vector3 end) {
-        moving = true;
         float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
 
         while (sqrRemainingDistance > float.Epsilon) {
@@ -35,13 +34,12 @@ public abstract class MovingObject : MonoBehaviour {
                 sqrRemainingDistance = (transform.position - end).sqrMagnitude;
             }
             yield return null;
-            
         }
         StartCoroutine(EndMovement());
     }
 
     protected virtual IEnumerator EndMovement() {
-        yield return new WaitForSeconds(movePauseTime);
+        if (movePauseTime > 0) yield return new WaitForSeconds(movePauseTime);
         moving = false;
     }
 
@@ -61,6 +59,8 @@ public abstract class MovingObject : MonoBehaviour {
     }
 
     protected virtual bool AttemptMove (float xDir, float yDir) {
+        if (moving) return false;
+        moving = true;
         Vector2 start = transform.position;
         Vector2 end = start + new Vector2(xDir, yDir);
 
@@ -68,6 +68,7 @@ public abstract class MovingObject : MonoBehaviour {
             StartCoroutine(SmoothMovement(end));
             return true;
         } else {
+            StartCoroutine(EndMovement());
             return false;
         }
 

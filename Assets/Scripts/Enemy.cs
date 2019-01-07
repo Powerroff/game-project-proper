@@ -54,6 +54,9 @@ public class Enemy : MovingObject {
             return true;
         }
 
+        if ((transform.position - T.position).sqrMagnitude < .25)
+            return true; //Move off of any object you accidentally overlapped
+
 
         switch (T.tag) {
             case "Underbrush":

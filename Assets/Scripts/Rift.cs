@@ -6,8 +6,10 @@ public class Rift : MonoBehaviour
 {
     // Start is called before the first frame update
     public int maxEnemies;
+    public int spawnPreventionSq;
     public float lastUpdate;
     public GameObject riftEnemy;
+    public GameObject party;
     void Start()
     {
         SpawnEnemies(maxEnemies);
@@ -28,19 +30,12 @@ public class Rift : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (party == null)
+            party = GameObject.FindGameObjectWithTag("Player");
         if (Time.time - lastUpdate > 5) {
             lastUpdate = Time.time;
-            bool playerNearby = false;
-            int riftEnemiesNearby = 0;
-            Collider2D[] nearby = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y), 10);
-            foreach (Collider2D collider in nearby) {
-                if (collider.tag == "Player") {
-                    playerNearby = true;
-                }
-                if (collider.tag == "RiftEnemy") {
-                    riftEnemiesNearby++;
-                    }
-            }
+            bool playerNearby = ((transform.position - party.transform.position).sqrMagnitude <= spawnPreventionSq);
+            int riftEnemiesNearby = transform.childCount;
             if (!playerNearby)
                 SpawnEnemies(maxEnemies - riftEnemiesNearby);
         }

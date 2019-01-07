@@ -92,7 +92,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ec46575cc19cb147aa467d8e238040f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxEnemies: 2
+  maxEnemies: 3
+  spawnPreventionSq: 25
   lastUpdate: 0
   riftEnemy: {fileID: 8158349025796604677, guid: a723cce74f1b2e345b2928ec077aace5,
     type: 3}
+  party: {fileID: 0}
