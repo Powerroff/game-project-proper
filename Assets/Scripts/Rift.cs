@@ -32,7 +32,7 @@ public class Rift : MonoBehaviour
     {
         if (party == null)
             party = GameObject.FindGameObjectWithTag("Player");
-        if (Time.time - lastUpdate > 5) {
+        if (Time.time - lastUpdate > 20) {
             lastUpdate = Time.time;
             bool playerNearby = ((transform.position - party.transform.position).sqrMagnitude <= spawnPreventionSq);
             int riftEnemiesNearby = transform.childCount;

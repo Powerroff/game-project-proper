@@ -5,22 +5,137 @@ using UnityEngine.UI;
 
 public class Party : MovingObject {
 
-    
+
     public Text staminaText;
     public Text healthText;
-    public Text strengthText;
     public GameObject bullet;
     public int[] inventory;
-    public Deck cards;
+    public Deck[] decks;
+    public int current_deck;
     private int stamina;
     private bool shooting;
     // private Animator animator;
 
     private int health;
-    private int strength; //damage?
     //other stats probably
     private enum inv_items { Scrap };
 
+
+
+    //Initialization ----------------------------
+    protected override void Start() {
+        //animator = GetComponent<Animator>();
+        InitUI();
+        shooting = false;
+        inventory = new int[10];
+        base.Start();
+        clearFog();
+    }
+
+    private void InitUI() {
+
+        {
+            staminaText = GameObject.Find("StaminaText").GetComponent<Text>();
+            healthText = GameObject.Find("HealthText").GetComponent<Text>();
+            updateStamina(100);
+            updateHealth(100);
+        } //Init health, stamina
+
+        {
+            decks = new Deck[2];
+            decks[0] = new Deck(GameObject.Find("LeftCard_Panel"));
+            decks[1] = new Deck(GameObject.Find("RightCard_Panel"));
+
+            decks[0].InitBasicDeck();
+            decks[1].InitBasicDeck();
+
+            current_deck = 0;
+        } //Init decks
+    }
+    //-------------------------------------------
+
+
+    //Variable update methods---------------------
+    private void updateStamina(int newStamina) {
+        stamina = newStamina;
+        staminaText.text = "Stamina: " + stamina;
+    }
+
+    private void updateHealth(int newHealth) {
+        health = newHealth;
+        healthText.text = "Health: " + health;
+    }
+
+    public void TakeDamage(int damage) {
+        health -= damage;
+        healthText.text = "Health: " + health;
+    }
+    //--------------------------------------------
+
+
+    //Frame update methods -----------------------
+    void Update() {
+        if (Time.timeScale < 0.75f)
+            return;
+        EvaluateMovementInput();
+        EvaluateShootingInput();
+    }
+
+    void EvaluateMovementInput() {
+        int horizontal = 0;
+        int vertical = 0;
+        horizontal = (int)Input.GetAxisRaw("Horizontal");
+        vertical = (int)Input.GetAxisRaw("Vertical");
+
+        if (horizontal != 0 || vertical != 0)
+            if (!moving) {
+                clearFog();
+                AttemptMove(horizontal, vertical);
+            }
+    }
+
+    void EvaluateShootingInput() {
+        int shootingXDir = 0;
+        int shootingYDir = 0;
+
+        shootingXDir = (int)Input.GetAxisRaw("Fire Horizontal");
+        shootingYDir = (int)Input.GetAxisRaw("Fire Vertical");
+        Deck deck = decks[current_deck];
+        if (shootingXDir != 0 || shootingYDir != 0) {
+            if (!deck.IsReloading()) {
+                deck.SetReloading(true);
+                StartCoroutine(deck.flash());
+                Deck.Card c = deck.Pop();
+                deck.UpdatePanel();
+                Bullet instance = Instantiate(bullet, transform.position, Quaternion.FromToRotation(new Vector3(1, 0), new Vector3(shootingXDir, shootingYDir))).GetComponent<Bullet>();
+                instance.damage = c.damage;
+                if (instance.damage > 15)
+                    instance.GetComponent<SpriteRenderer>().sprite = instance.power_bullet;
+                instance.xDir = shootingXDir;
+                instance.yDir = shootingYDir;
+                instance.lifespan = 7;
+                StartCoroutine(deck.Reload(c.reload));
+                if (Input.GetButton("Deck Cycle"))
+                    StartCoroutine(CycleDecks(0.5f));
+
+            }
+        }
+    }
+
+    IEnumerator CycleDecks(float cycleTime) {
+        yield return new WaitForSeconds(cycleTime);
+        current_deck = (current_deck + 1) % decks.Length;
+    }
+    //    --Movement--     -----------------------
+    void clearFog() {
+        Collider2D[] nearby = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y), 4);
+        foreach (Collider2D collider in nearby) {
+            GameObject gameObject = collider.gameObject;
+            if (gameObject.tag == "Fog") {
+                Destroy(gameObject);
+            }
+        }
+    }
 
     protected override bool MoveThrough(Transform T) {
 
@@ -30,7 +145,7 @@ public class Party : MovingObject {
         //Debug.Log(T.name);
         if (T == null) {
             return true;
-        }  else if (stamina <= 0) {
+        } else if (stamina <= 0) {
             return false;
         }
 
@@ -66,9 +181,7 @@ public class Party : MovingObject {
                 updateHealth(100);
                 return;
             case "Item":
-                strength += 10;
                 Destroy(collision.gameObject);
-                strengthText.text = "Strength: " + strength;
                 return;
             case "Scrap":
                 inventory[(int)inv_items.Scrap]++;
@@ -79,93 +192,6 @@ public class Party : MovingObject {
 
         }
     }
+    //---------------------------------------------
 
-    void clearFog() {
-        Collider2D[] nearby = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y), 4);
-        foreach (Collider2D collider in nearby) {
-            GameObject gameObject = collider.gameObject;
-            if (gameObject.tag == "Fog") {
-                Destroy(gameObject);
-            }
-        }
-    }
-
-    public void TakeDamage(int damage) {
-        health -= damage;
-        healthText.text = "Health: " + health;
-    }
-
-    // Use this for initialization
-    protected override void Start () {
-        //animator = GetComponent<Animator>();
-        staminaText = GameObject.Find("StaminaText").GetComponent<Text>();
-        healthText = GameObject.Find("HealthText").GetComponent<Text>();
-        strengthText = GameObject.Find("StrengthText").GetComponent<Text>();
-        updateStamina(100);
-        updateHealth(100);
-        strength = 10;
-        shooting = false;
-        strengthText.text = "Strength: " + strength;
-        inventory = new int[10];
-        base.Start();
-        clearFog();
-        cards = new Deck();
-        cards.init_basic_decks();
-	}
-
-
-    private void updateStamina(int newStamina) {
-        stamina = newStamina;
-        staminaText.text = "Stamina: " + stamina;
-    }
-
-    private void updateHealth(int newHealth) {
-        health = newHealth;
-        healthText.text = "Health: " + health;
-    }
-
-    private IEnumerator Reload(float seconds) {
-        yield return new WaitForSeconds(seconds);
-        shooting = false;
-    }
-
-    // Update is called once per frame
-    void Update () {
-        if (Time.timeScale < 0.75f)
-            return;
-        int horizontal = 0;
-        int vertical = 0;
-        int shootingXDir = 0;
-        int shootingYDir = 0;
-
-        horizontal = (int)Input.GetAxisRaw("Horizontal");
-        vertical = (int)Input.GetAxisRaw("Vertical");
-        shootingXDir = (int)Input.GetAxisRaw("Fire Horizontal");
-        shootingYDir = (int)Input.GetAxisRaw("Fire Vertical");
-        if (shootingXDir != 0 || shootingYDir != 0) {
-            if (!shooting) {
-                shooting = true;
-                Deck.Card c = Deck.pop(cards.up_deck);
-                Deck.Update_Panel(cards.up_deck, cards.up_panel);
-                Bullet instance = Instantiate(bullet, transform.position, Quaternion.FromToRotation(new Vector3(1,0),new Vector3(shootingXDir, shootingYDir))).GetComponent<Bullet>();
-                instance.damage = c.damage;
-                if (instance.damage > 15)
-                    instance.GetComponent<SpriteRenderer>().sprite = instance.power_bullet;
-                instance.xDir = shootingXDir;
-                instance.yDir = shootingYDir;
-                instance.lifespan = 7;
-                StartCoroutine(Reload(c.reload));
-            }
-        }
-
-        //Debug.Log(stamina);
-
-        //if (horizontal != 0) vertical = 0;
-        if (horizontal != 0 || vertical != 0)
-            if (!moving) {
-                clearFog();
-                //Debug.Log("Cleared Fog");
-                AttemptMove(horizontal, vertical);
-            }
-	}
 }
