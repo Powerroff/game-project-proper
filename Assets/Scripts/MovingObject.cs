@@ -27,15 +27,17 @@ public abstract class MovingObject : MonoBehaviour {
     protected virtual IEnumerator SmoothMovement (Vector3 end) {
         float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
 
-        while (sqrRemainingDistance > float.Epsilon) {
+        while (sqrRemainingDistance > 0.001f) { //was Float.Epsilon, this caused problems. This still may be a bug in the future!
             if (Time.timeScale > .75f) {
                 Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, inverseMoveTime * Time.deltaTime);
                 rb2D.MovePosition(newPosition);
                 sqrRemainingDistance = (transform.position - end).sqrMagnitude;
             }
             yield return null;
+            
         }
-        StartCoroutine(EndMovement());
+        rb2D.MovePosition(end);
+        yield return EndMovement();
     }
 
     protected virtual IEnumerator EndMovement() {

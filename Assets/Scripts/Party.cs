@@ -13,7 +13,8 @@ public class Party : MovingObject {
     public Deck[] decks;
     public int current_deck;
     private int stamina;
-    private bool shooting;
+    private BoardManager boardManager;
+    private bool begin;
     // private Animator animator;
 
     private int health;
@@ -26,10 +27,14 @@ public class Party : MovingObject {
     protected override void Start() {
         //animator = GetComponent<Animator>();
         InitUI();
-        shooting = false;
+        boardManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<BoardManager>();
+        Debug.Log(boardManager.ToString());
         inventory = new int[10];
         base.Start();
         clearFog();
+        boardManager.loadChunks(transform.position);
+        begin = false; //TODO do this better
+        boardManager.GetComponent<BulkLoader>().performingFirstLoad = 1;
     }
 
     private void InitUI() {
@@ -75,6 +80,14 @@ public class Party : MovingObject {
 
     //Frame update methods -----------------------
     void Update() {
+        if (!begin) {
+            if (boardManager.GetComponent<BulkLoader>().performingFirstLoad < 2)
+                return;
+            else {
+                begin = true;
+                GetComponentInChildren<Camera>().enabled = true;
+            }
+        }
         if (Time.timeScale < 0.75f)
             return;
         EvaluateMovementInput();
@@ -87,11 +100,14 @@ public class Party : MovingObject {
         horizontal = (int)Input.GetAxisRaw("Horizontal");
         vertical = (int)Input.GetAxisRaw("Vertical");
 
-        if (horizontal != 0 || vertical != 0)
+        if (horizontal != 0 || vertical != 0) {
             if (!moving) {
-                clearFog();
                 AttemptMove(horizontal, vertical);
+
+                clearFog();
+                boardManager.loadChunks(transform.position);
             }
+        }
     }
 
     void EvaluateShootingInput() {

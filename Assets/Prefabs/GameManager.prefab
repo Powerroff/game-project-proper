@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 4154657408813088}
   - component: {fileID: 114365965750963538}
   - component: {fileID: 114206794134703260}
+  - component: {fileID: 5979652818677995249}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -56,6 +57,7 @@ MonoBehaviour:
   enemy: {fileID: 3239615047546714138, guid: 9772c4fffa7be9348a4c1c6589d7b7f5, type: 3}
   pauseMenu: {fileID: 0}
   rift: {fileID: 1274610406717009307, guid: 6ffc074ff4fee954e98d142f3422df71, type: 3}
+  boardHolder: {fileID: 0}
 --- !u!114 &114206794134703260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,3 +71,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardScript: {fileID: 0}
+--- !u!114 &5979652818677995249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1414948147363508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18f090931638ef54cbf39ff542eb047a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

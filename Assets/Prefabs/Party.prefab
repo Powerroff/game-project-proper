@@ -39,7 +39,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1309873259}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0.025587391, g: 0.21698111, b: 0.025587391, a: 0}
@@ -58,7 +58,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -203,16 +203,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bdb7088a6a18a24b85d18c3db7d5a70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveTime: 0.1
+  moveTime: 0.2
   movePauseTime: 0
   blockingLayer:
     serializedVersion: 2
     m_Bits: 1
   staminaText: {fileID: 0}
   healthText: {fileID: 0}
-  strengthText: {fileID: 0}
   bullet: {fileID: 8635895661018318417, guid: b1729f44f3106ac4e85e0d58e88c609c, type: 3}
   inventory: 
+  current_deck: 0
 --- !u!50 &6262939904582599931
 Rigidbody2D:
   serializedVersion: 4
