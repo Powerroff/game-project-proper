@@ -8,12 +8,13 @@ public class BoardManager : MonoBehaviour {
     public int rows = 8;
 
     public GameObject underbrush;
+    public GameObject gemUnderbrush;
     public GameObject party;
     public GameObject partyBase;
     public GameObject POI;
     public GameObject fog;
     public GameObject lake;
-    public GameObject item;
+    public GameObject[] equipment;
     public GameObject enemy;
     public GameObject pauseMenu;
     public GameObject rift;
@@ -70,6 +71,7 @@ public class BoardManager : MonoBehaviour {
         int riftsToPlace = 1;
         int lakesToPlace = 3;
         int itemsToPlace = 15;
+        int gemsToPlace = 4;
         while (riftsToPlace + lakesToPlace + itemsToPlace > 0) {
             int i = Random.Range(0, 5);
             int j = Random.Range(0, 5);
@@ -86,7 +88,11 @@ public class BoardManager : MonoBehaviour {
                     lakesToPlace--;
                 } else if (itemsToPlace > 0) {
                     metaMap[i, j] = Chunk.Chunktype.Item;
-                    chunks.Add(new Chunk(new Vector3Int(chunkSize * (i - 2), chunkSize * (j - 2), 0), Chunk.Chunktype.Item, this));
+                    chunks.Add(c = new Chunk(new Vector3Int(chunkSize * (i - 2), chunkSize * (j - 2), 0), Chunk.Chunktype.Item, this));
+                    if (Random.value < (float)gemsToPlace / itemsToPlace) {
+                        c.isGemChunk = true;
+                        gemsToPlace--;
+                    }
                     itemsToPlace--;
                 }
 

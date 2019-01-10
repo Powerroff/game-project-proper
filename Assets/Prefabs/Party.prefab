@@ -213,6 +213,19 @@ MonoBehaviour:
   bullet: {fileID: 8635895661018318417, guid: b1729f44f3106ac4e85e0d58e88c609c, type: 3}
   inventory: 
   current_deck: 0
+  equipment1:
+  - {fileID: 5601748341407731687, guid: 1ae4cd493a0f0ff4fb39239e993e1944, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  equipment2:
+  - {fileID: 5601748341407731687, guid: 1ae4cd493a0f0ff4fb39239e993e1944, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  basicCard: {fileID: 11400000, guid: f90dec389efa8564fba11ea8b7480f05, type: 2}
 --- !u!50 &6262939904582599931
 Rigidbody2D:
   serializedVersion: 4

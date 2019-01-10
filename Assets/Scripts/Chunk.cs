@@ -11,6 +11,7 @@ public class Chunk
     public Chunktype type;
     public bool isInitialized;
     public bool isActive;
+    public bool isGemChunk;
 
 
 
@@ -23,6 +24,7 @@ public class Chunk
         this.anchor = anchor;
         this.boardManager = boardManager;
         this.bulkLoader = boardManager.gameObject.GetComponent<BulkLoader>();
+        this.isGemChunk = false;
         type = 0;
         isActive = false;
         isInitialized = false;
@@ -34,6 +36,7 @@ public class Chunk
         this.type = type;
         this.boardManager = boardManager;
         this.bulkLoader = boardManager.gameObject.GetComponent<BulkLoader>();
+        this.isGemChunk = false;
         isActive = false;
         isInitialized = false;
     }
@@ -44,7 +47,7 @@ public class Chunk
         else
             isActive = active;
 
-        Debug.Log("Setting activity of chunk at " + anchor.ToString() + " to " + active);
+        //Debug.Log("Setting activity of chunk at " + anchor.ToString() + " to " + active);
 
         if (active && !isInitialized)
             initChunk();
@@ -130,28 +133,11 @@ public class Chunk
             }
         }
     }
-
-    void initClearingChunk() {
-        Vector3 center = new Vector3(anchor.x + chunkSize / 2, anchor.y + chunkSize / 2);
-        for (int xPos = (int)anchor.x; xPos < (int)anchor.x + chunkSize; xPos++) {
-            for (int yPos = (int)anchor.y; yPos < (int)anchor.y + chunkSize; yPos++) {
-                Vector3 loc = new Vector3(xPos, yPos);
-                initObject(boardManager.fog, loc);
-                if ((loc - center).sqrMagnitude > 25) {
-                    if (Random.value < .98)
-                        initObject(boardManager.underbrush, loc);
-                    if (Random.value > .99)
-                        initObject(boardManager.enemy, loc);
-                }
-
-            }
-        }
-    }
-
+    
     void initItemChunk() {
         initClearingChunk();
         Vector3 center = new Vector3(anchor.x + chunkSize / 2, anchor.y + chunkSize / 2);
-        initObject(boardManager.item, center);
+        initObject(boardManager.equipment[Random.Range(0,boardManager.equipment.Length)], center);
     }
 
     void initPOIChunk() {
@@ -172,5 +158,26 @@ public class Chunk
         initObject(boardManager.partyBase, center);
         initObject(boardManager.party, center, true);
     }
-        
+
+    void initClearingChunk() {
+        Vector3 center = new Vector3(anchor.x + chunkSize / 2, anchor.y + chunkSize / 2);
+        for (int xPos = (int)anchor.x; xPos < (int)anchor.x + chunkSize; xPos++) {
+            for (int yPos = (int)anchor.y; yPos < (int)anchor.y + chunkSize; yPos++) {
+                Vector3 loc = new Vector3(xPos, yPos);
+                initObject(boardManager.fog, loc);
+                if ((loc - center).sqrMagnitude > 25) {
+                    if (Random.value < .98) {
+                        if (isGemChunk && Random.value < .01) {
+                            initObject(boardManager.gemUnderbrush, loc);
+                        } else
+                            initObject(boardManager.underbrush, loc);
+                    }
+                    if (Random.value > .99)
+                        initObject(boardManager.enemy, loc);
+                }
+
+            }
+        }
+    }
+
 }

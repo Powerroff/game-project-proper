@@ -15,13 +15,31 @@ public class Party : MovingObject {
     private int stamina;
     private BoardManager boardManager;
     private bool begin;
+    private bool isCyclingDecks;
     // private Animator animator;
 
     private int health;
     //other stats probably
-    private enum inv_items { Scrap };
+    private enum inv_items { Scrap, Gems };
+    public Equipment[] equipment1;
+    public Equipment[] equipment2;
+    equipWrapper[][] equipment;
+    public Card basicCard;
 
+    struct equipWrapper {
+        public Equipment.Slot slot;
+        public Card card;
 
+        public equipWrapper(Equipment e) { //Get rid of this struct and everything that references it, eventually
+            if (e == null) {
+                slot = 0;
+                card = null;
+            } else {
+                slot = e.slot;
+                card = e.card;
+            }
+        }
+    }
 
     //Initialization ----------------------------
     protected override void Start() {
@@ -35,6 +53,7 @@ public class Party : MovingObject {
         boardManager.loadChunks(transform.position);
         begin = false; //TODO do this better
         boardManager.GetComponent<BulkLoader>().performingFirstLoad = 1;
+        isCyclingDecks = false;
     }
 
     private void InitUI() {
@@ -47,15 +66,23 @@ public class Party : MovingObject {
         } //Init health, stamina
 
         {
+
+            equipment = new equipWrapper[2][]; //Code for testing, to be changed later.
+            equipment[0] = new equipWrapper[equipment1.Length];
+            equipment[1] = new equipWrapper[equipment2.Length];
+            for (int i = 0; i < equipment2.Length; i++) {
+                equipment[0][i] = new equipWrapper(equipment1[i]);
+                equipment[1][i] = new equipWrapper(equipment2[i]);
+            }
+
             decks = new Deck[2];
             decks[0] = new Deck(GameObject.Find("LeftCard_Panel"));
             decks[1] = new Deck(GameObject.Find("RightCard_Panel"));
 
-            decks[0].InitBasicDeck();
-            decks[1].InitBasicDeck();
+            updateDecks();
 
             current_deck = 0;
-        } //Init decks
+        } //Init equipment, decks
     }
     //-------------------------------------------
 
@@ -75,6 +102,23 @@ public class Party : MovingObject {
         health -= damage;
         healthText.text = "Health: " + health;
     }
+
+    void updateDecks() {
+        foreach (equipWrapper e in equipment[0])
+            if (e.card != null)
+                Debug.Log(e.card.name);
+
+        for (int deckNum = 0; deckNum < equipment.Length; deckNum++) {
+            decks[deckNum] = new Deck(decks[deckNum].panel);
+            for (int i = 0; i < Equipment.numSlots; i++) {
+                if (equipment[deckNum][i].card == null) {
+                    decks[deckNum].Add(basicCard);
+                } else
+                    decks[deckNum].Add(equipment[deckNum][i].card);
+            }
+            decks[deckNum].UpdatePanel();
+        }
+    }
     //--------------------------------------------
 
 
@@ -92,6 +136,8 @@ public class Party : MovingObject {
             return;
         EvaluateMovementInput();
         EvaluateShootingInput();
+        if (Input.GetButtonDown("Deck Cycle"))
+            isCyclingDecks = !isCyclingDecks;
     }
 
     void EvaluateMovementInput() {
@@ -121,7 +167,7 @@ public class Party : MovingObject {
             if (!deck.IsReloading()) {
                 deck.SetReloading(true);
                 StartCoroutine(deck.flash());
-                Deck.Card c = deck.Pop();
+                Card c = deck.Pop();
                 deck.UpdatePanel();
                 Bullet instance = Instantiate(bullet, transform.position, Quaternion.FromToRotation(new Vector3(1, 0), new Vector3(shootingXDir, shootingYDir))).GetComponent<Bullet>();
                 instance.damage = c.damage;
@@ -131,7 +177,7 @@ public class Party : MovingObject {
                 instance.yDir = shootingYDir;
                 instance.lifespan = 7;
                 StartCoroutine(deck.Reload(c.reload));
-                if (Input.GetButton("Deck Cycle"))
+                if (isCyclingDecks)
                     StartCoroutine(CycleDecks(0.5f));
 
             }
@@ -169,7 +215,7 @@ public class Party : MovingObject {
         switch (T.tag) {
             case "Underbrush":
                 Underbrush hitUnderbrush = T.GetComponent<Underbrush>() as Underbrush;
-                hitUnderbrush.cutBrush();
+                hitUnderbrush.cutBrush(1);
 
                 updateStamina(stamina - 1);
                 //animator.setTrigger("playerChop");
@@ -197,10 +243,17 @@ public class Party : MovingObject {
                 updateHealth(100);
                 return;
             case "Item":
+                Equipment item = collision.GetComponent<Equipment>();
+                equipment[current_deck][(int)item.slot] = new equipWrapper(item);
+                updateDecks(); //This resets the decks. Maybe fix this when I redo the deck data structure.
                 Destroy(collision.gameObject);
                 return;
             case "Scrap":
                 inventory[(int)inv_items.Scrap]++;
+                Destroy(collision.gameObject);
+                return;
+            case "Gem":
+                inventory[(int)inv_items.Gems]++;
                 Destroy(collision.gameObject);
                 return;
             default:

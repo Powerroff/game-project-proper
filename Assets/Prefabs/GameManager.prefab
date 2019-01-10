@@ -48,12 +48,19 @@ MonoBehaviour:
   columns: 80
   rows: 80
   underbrush: {fileID: 1704595100362172, guid: 001a7d6e6cdf69a46baf80b0d88f806d, type: 3}
+  gemUnderbrush: {fileID: 9032151446744581847, guid: 967509a1fc6f18d40aed1174857b0255,
+    type: 3}
   party: {fileID: 1490966851148842, guid: eea64a0b42ea934418cc5ab8a8ef400a, type: 3}
   partyBase: {fileID: 1407087367013436, guid: 37afc7e510a54d84db9066d9352b6fd1, type: 3}
   POI: {fileID: 1975186544418424, guid: 370e2570272c6dc4e980b40ebd436593, type: 3}
   fog: {fileID: 1992019418792438, guid: f58b70f794c212546adf6379332d0132, type: 3}
   lake: {fileID: 1916625614551290, guid: d1d6a61be6e0b1f429551a7aed159e87, type: 3}
-  item: {fileID: 2973045741843010634, guid: abf7841f615732849b88c7c1f9e0f097, type: 3}
+  equipment:
+  - {fileID: 2975040794727633087, guid: 53739acb9e2af23488c4092e24e1fd3a, type: 3}
+  - {fileID: 7850091674108777183, guid: cf710db962a537e4592e01d49e566df9, type: 3}
+  - {fileID: 8725666521427535215, guid: 1ae4cd493a0f0ff4fb39239e993e1944, type: 3}
+  - {fileID: 8165597809696904937, guid: 83dca2ebc82a87a49821623e27b645e6, type: 3}
+  - {fileID: 6534511993222200617, guid: 9c8053d41e35a2448948e2f8ea1e6b05, type: 3}
   enemy: {fileID: 3239615047546714138, guid: 9772c4fffa7be9348a4c1c6589d7b7f5, type: 3}
   pauseMenu: {fileID: 0}
   rift: {fileID: 1274610406717009307, guid: 6ffc074ff4fee954e98d142f3422df71, type: 3}
@@ -83,3 +90,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18f090931638ef54cbf39ff542eb047a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  performingFirstLoad: 0
