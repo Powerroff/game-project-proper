@@ -15,6 +15,7 @@ TagManager:
   - Scrap
   - RiftEnemy
   - Gem
+  - Rift
   layers:
   - Default
   - TransparentFX

@@ -55,6 +55,7 @@ public class Party : MovingObject {
         boardManager.GetComponent<BulkLoader>().performingFirstLoad = 1;
         isCyclingDecks = false;
     }
+    
 
     private void InitUI() {
 
@@ -101,6 +102,9 @@ public class Party : MovingObject {
     public void TakeDamage(int damage) {
         health -= damage;
         healthText.text = "Health: " + health;
+        if (health <= 0) {
+            boardManager.GameOver(false);
+        }
     }
 
     void updateDecks() {
@@ -199,7 +203,7 @@ public class Party : MovingObject {
         }
     }
 
-    protected override bool MoveThrough(Transform T) {
+    protected override bool MoveThrough(Transform T) {        
 
         if ((transform.position - T.position).sqrMagnitude < .25)
             return true; //Move off of any object you accidentally overlapped
@@ -255,6 +259,15 @@ public class Party : MovingObject {
             case "Gem":
                 inventory[(int)inv_items.Gems]++;
                 Destroy(collision.gameObject);
+                return;
+            case "Rift":
+                if (Input.GetButton("Interact")) {
+                    if (inventory[(int)inv_items.Gems] >= 1 && inventory[(int)inv_items.Scrap] >= 1) {
+                        inventory[(int)inv_items.Gems] -= 1;
+                        inventory[(int)inv_items.Scrap] -= 1;
+                        collision.GetComponent<Rift>().beginDrilling();
+                    }
+                }
                 return;
             default:
                 return;

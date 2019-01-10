@@ -39,7 +39,7 @@ public class RiftSnake : MovingObject {
             }
         }
     }
-    
+
     private void MoveToward(Vector2 loc) {
 
         Vector2 dir = (loc - (Vector2)transform.position);
@@ -48,7 +48,7 @@ public class RiftSnake : MovingObject {
         dir.Normalize();
         AttemptMove(Mathf.Round(dir.x), Mathf.Round(dir.y));
     }
-    
+
 
     public void TakeDamage(int damage) {
         health -= damage;
@@ -107,4 +107,18 @@ public class RiftSnake : MovingObject {
 
 
     }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        switch (collision.tag) {
+            case "Rift":
+                Rift r = collision.GetComponent<Rift>();
+                if (r.drilling)
+                    r.takeDamage(20);
+                break;
+            default:
+                return;
+
+        }
+    }
 }
+

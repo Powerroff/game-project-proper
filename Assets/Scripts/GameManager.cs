@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
+        Random.InitState(System.DateTime.Now.Day + System.DateTime.Now.Millisecond);
 
         if (instance == null) {
             instance = this;
@@ -26,7 +28,14 @@ public class GameManager : MonoBehaviour {
         boardScript.boardSetup();
 	}
 	
-    public void GameOver() {
+    public void GameOver(bool win) {
+        GameObject.Find("UICanvas").transform.Find("Game End Panel").gameObject.SetActive(true);
+        Text t = GameObject.Find("Game End Panel").GetComponentInChildren<Text>();
+        if (win)
+            t.text = "Victory!";
+        else
+            t.text = "Defeat";
+        Time.timeScale = 0;
         enabled = false;
     }
 }

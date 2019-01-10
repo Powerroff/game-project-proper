@@ -118,4 +118,7 @@ public class BoardManager : MonoBehaviour {
 		
 	}
 
+    public void GameOver( bool win) {
+        GetComponent<GameManager>().GameOver(win);
+    }
 }
