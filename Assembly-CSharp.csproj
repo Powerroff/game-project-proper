@@ -70,7 +70,6 @@
     <Compile Include="Assets\Scripts\Enemy.cs" />
     <Compile Include="Assets\Scripts\Equipment.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
-    <Compile Include="Assets\Scripts\Loader.cs" />
     <Compile Include="Assets\Scripts\MovingObject.cs" />
     <Compile Include="Assets\Scripts\Party.cs" />
     <Compile Include="Assets\Scripts\Rift.cs" />

@@ -12,8 +12,6 @@ public class Rift : MonoBehaviour
     public GameObject riftEnemy;
     public GameObject party;
     public Sprite drillingSprite;
-    Text DrillText;
-    Text DrillTimerText;
     public bool drilling;
     float drillStartTime;
     int health;
@@ -21,8 +19,6 @@ public class Rift : MonoBehaviour
     {
         SpawnEnemies(maxEnemies);
         lastUpdate = Time.time;
-        DrillText = GameObject.Find("DrillHealthText").GetComponent<Text>();
-        DrillTimerText = GameObject.Find("DrillTimerText").GetComponent<Text>();
         drilling = false;
         health = 1000;
     }
@@ -54,12 +50,12 @@ public class Rift : MonoBehaviour
         }
 
         if (drilling) {
-            DrillText.text = "Rift Drill Health: " + health;
-            DrillTimerText.text = "Drill Time Remaining: " + (int)(60 - (Time.realtimeSinceStartup - drillStartTime));
+            GameManager.gameManager.uiManager.drillHealthText.text = "Rift Drill Health: " + health;
+            GameManager.gameManager.uiManager.drillTimerText.text = "Drill Time Remaining: " + (int)(60 - (Time.realtimeSinceStartup - drillStartTime));
             if (health <= 0)
-                GameObject.FindGameObjectWithTag("GameController").GetComponent<BoardManager>().GameOver(false);
+                GameManager.gameManager.GameOver(false);
             if (Time.realtimeSinceStartup - drillStartTime > 60)
-                GameObject.FindGameObjectWithTag("GameController").GetComponent<BoardManager>().GameOver(true);
+                GameManager.gameManager.GameOver(true);
         }
     }
 
@@ -73,5 +69,8 @@ public class Rift : MonoBehaviour
         drillStartTime = Time.realtimeSinceStartup;
         maxEnemies = 7;
         GetComponent<SpriteRenderer>().sprite = drillingSprite;
+
+        GameManager.gameManager.uiManager.drillHealthText.enabled = true;
+        GameManager.gameManager.uiManager.drillTimerText.enabled = true;
     }
 }

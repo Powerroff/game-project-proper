@@ -6,12 +6,21 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     public GameObject pausePanel;
+    public GameObject uiCanvas;
+    public GameObject leftCardPanel;
+    public GameObject rightCardPanel;
+    public GameObject gameEndPanel;
+
+    public Text staminaText;
+    public Text healthText;
+    public Text gameEndText;
+    public Text drillHealthText;
+    public Text drillTimerText;
+
     private bool paused;
     // Start is called before the first frame update
     void Start()
     {
-        pausePanel = GameObject.Find("Pause_Panel");
-        pausePanel.SetActive(false);
         paused = false;
     }
 

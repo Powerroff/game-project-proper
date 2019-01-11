@@ -19,10 +19,10 @@ public class Deck
         this.panel = panel;
         deck = new Queue<Card>();
         reloading = false;
-        defaultColor = panel.GetComponent<Image>().color;
+        defaultColor = new Color(1, 1, 1, 100f / 255f);
     }
 
-    public IEnumerator flash() {
+    public IEnumerator Flash() {
         Image image = panel.GetComponent<Image>();
         image.color = new Color(0, 255, 0, 255);
         yield return new WaitForSeconds(.1f);

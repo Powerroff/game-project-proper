@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Chunk
 {
-    public BoardManager boardManager;
-    public BulkLoader bulkLoader;
     public List<GameObject> entities;
     public Vector3Int anchor;
     public Chunktype type;
@@ -19,29 +17,25 @@ public class Chunk
     public static readonly int chunkSize = 20;
     public enum Chunktype { Normal, Lake, Item, Base, Rift};
 
-    public Chunk(Vector3Int anchor, BoardManager boardManager) {
+    public Chunk(Vector3Int anchor) {
         entities = new List<GameObject>();
         this.anchor = anchor;
-        this.boardManager = boardManager;
-        this.bulkLoader = boardManager.gameObject.GetComponent<BulkLoader>();
         this.isGemChunk = false;
         type = 0;
         isActive = false;
         isInitialized = false;
     }
 
-    public Chunk(Vector3Int anchor, Chunktype type, BoardManager boardManager) {
+    public Chunk(Vector3Int anchor, Chunktype type) {
         entities = new List<GameObject>();
         this.anchor = anchor;
         this.type = type;
-        this.boardManager = boardManager;
-        this.bulkLoader = boardManager.gameObject.GetComponent<BulkLoader>();
         this.isGemChunk = false;
         isActive = false;
         isInitialized = false;
     }
 
-    public void setActive(bool active) {
+    public void SetActive(bool active) {
         if (active == isActive)
             return;
         else
@@ -55,7 +49,7 @@ public class Chunk
         foreach (GameObject obj in entities) {
             if (obj != null)
                 //obj.SetActive(active);
-                bulkLoader.Activate(obj, active);
+                GameManager.gameManager.bulkLoader.Activate(obj, active);
         }
     }
 
@@ -87,29 +81,29 @@ public class Chunk
         }
     }
 
-//    GameObject initObject(GameObject obj, Vector3 loc) {
-//        GameObject instance = Object.Instantiate(obj, loc, Quaternion.identity, boardManager.boardHolder);
-//        entities.Add(instance);
-//        return instance;
-//    }
+    public GameObject initObjectImmediate(GameObject obj, Vector3 loc) {
+        GameObject instance = Object.Instantiate(obj, loc, Quaternion.identity, GameManager.gameManager.transform);
+        entities.Add(instance);
+        return instance;
+    }
 
     void initObject(GameObject obj, Vector3 loc) {
-        bulkLoader.Instantiate(obj, loc, boardManager.boardHolder, this);
+        GameManager.gameManager.bulkLoader.Instantiate(obj, loc, GameManager.gameManager.transform, this);
     }
 
     void initObject(GameObject obj, Vector3 loc, bool noChunk) {
         if (noChunk)
-            bulkLoader.Instantiate(obj, loc, boardManager.boardHolder, null);
+            GameManager.gameManager.bulkLoader.Instantiate(obj, loc, GameManager.gameManager.transform, null);
     }
 
     void initNormalChunk() {
         for (int xPos = (int)anchor.x; xPos < (int)anchor.x + chunkSize; xPos++) {
             for (int yPos = (int)anchor.y; yPos < (int)anchor.y + chunkSize; yPos++) {
                 Vector3 loc = new Vector3(xPos, yPos);
-                initObject(boardManager.fog, loc);
-                initObject(boardManager.underbrush, loc);
+                initObject(GameManager.gameManager.boardManager.fog, loc);
+                initObject(GameManager.gameManager.boardManager.underbrush, loc);
                 if (Random.value > .99)
-                    initObject(boardManager.enemy, loc);
+                    initObject(GameManager.gameManager.boardManager.enemy, loc);
             }
         }
     }
@@ -119,15 +113,15 @@ public class Chunk
         for (int xPos = (int)anchor.x; xPos < (int)anchor.x + chunkSize; xPos++) {
             for (int yPos = (int)anchor.y; yPos < (int)anchor.y + chunkSize; yPos++) {
                 Vector3 loc = new Vector3(xPos, yPos);
-                initObject(boardManager.fog, loc);
+                initObject(GameManager.gameManager.boardManager.fog, loc);
                 if ((loc - center).sqrMagnitude <= 25)
-                    initObject(boardManager.lake, loc);
+                    initObject(GameManager.gameManager.boardManager.lake, loc);
                 else if (Random.value > .98) {
-                    initObject(boardManager.lake, loc);
+                    initObject(GameManager.gameManager.boardManager.lake, loc);
                 } else {
-                    initObject(boardManager.underbrush, loc);
+                    initObject(GameManager.gameManager.boardManager.underbrush, loc);
                     if (Random.value > .99)
-                        initObject(boardManager.enemy, loc);
+                        initObject(GameManager.gameManager.boardManager.enemy, loc);
                 }
  
             }
@@ -137,26 +131,26 @@ public class Chunk
     void initItemChunk() {
         initClearingChunk();
         Vector3 center = new Vector3(anchor.x + chunkSize / 2, anchor.y + chunkSize / 2);
-        initObject(boardManager.equipment[Random.Range(0,boardManager.equipment.Length)], center);
+        initObject(GameManager.gameManager.boardManager.equipment[Random.Range(0, GameManager.gameManager.boardManager.equipment.Length)], center);
     }
 
     void initPOIChunk() {
         initClearingChunk();
         Vector3 center = new Vector3(anchor.x + chunkSize / 2, anchor.y + chunkSize / 2);
-        initObject(boardManager.POI, center);
+        initObject(GameManager.gameManager.boardManager.POI, center);
     }
 
     void initRiftChunk() {
         initClearingChunk();
         Vector3 center = new Vector3(anchor.x + chunkSize / 2, anchor.y + chunkSize / 2);
-        initObject(boardManager.rift, center);
+        initObject(GameManager.gameManager.boardManager.rift, center);
     }
 
     void initBaseChunk() {
         initClearingChunk();
         Vector3 center = new Vector3(anchor.x + chunkSize / 2, anchor.y + chunkSize / 2);
-        initObject(boardManager.partyBase, center);
-        initObject(boardManager.party, center, true);
+        initObject(GameManager.gameManager.boardManager.partyBase, center);
+        initObject(GameManager.gameManager.boardManager.party, center, true);
     }
 
     void initClearingChunk() {
@@ -164,16 +158,16 @@ public class Chunk
         for (int xPos = (int)anchor.x; xPos < (int)anchor.x + chunkSize; xPos++) {
             for (int yPos = (int)anchor.y; yPos < (int)anchor.y + chunkSize; yPos++) {
                 Vector3 loc = new Vector3(xPos, yPos);
-                initObject(boardManager.fog, loc);
+                initObject(GameManager.gameManager.boardManager.fog, loc);
                 if ((loc - center).sqrMagnitude > 25) {
                     if (Random.value < .98) {
                         if (isGemChunk && Random.value < .01) {
-                            initObject(boardManager.gemUnderbrush, loc);
+                            initObject(GameManager.gameManager.boardManager.gemUnderbrush, loc);
                         } else
-                            initObject(boardManager.underbrush, loc);
+                            initObject(GameManager.gameManager.boardManager.underbrush, loc);
                     }
                     if (Random.value > .99)
-                        initObject(boardManager.enemy, loc);
+                        initObject(GameManager.gameManager.boardManager.enemy, loc);
                 }
 
             }

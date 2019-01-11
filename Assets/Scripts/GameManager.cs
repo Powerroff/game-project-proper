@@ -5,10 +5,12 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
-    public static GameManager instance = null;
+    public static GameManager gameManager = null;
 
+    public BoardManager boardManager;
+    public BulkLoader bulkLoader;
+    public UIManager uiManager;
 
-    public BoardManager boardScript;
 
     //public int stamina;
 
@@ -16,26 +18,25 @@ public class GameManager : MonoBehaviour {
 	void Awake () {
         Random.InitState(System.DateTime.Now.Day + System.DateTime.Now.Millisecond);
 
-        if (instance == null) {
-            instance = this;
-        } else if (instance != this) {
+        if (gameManager == null) {
+            gameManager = this;
+        } else if (gameManager != this) {
             Destroy(gameObject);
         }
 
         DontDestroyOnLoad(gameObject);
-
-        boardScript = GetComponent<BoardManager>();
-        boardScript.boardSetup();
 	}
-	
+
+    private void Start() {
+        boardManager.BoardSetup();
+    }
+
     public void GameOver(bool win) {
-        GameObject.Find("UICanvas").transform.Find("Game End Panel").gameObject.SetActive(true);
-        Text t = GameObject.Find("Game End Panel").GetComponentInChildren<Text>();
+        uiManager.gameEndPanel.SetActive(true);
         if (win)
-            t.text = "Victory!";
+            uiManager.gameEndText.GetComponent<Text>().text = "Victory!";
         else
-            t.text = "Defeat";
+            uiManager.gameEndText.GetComponent<Text>().text = "Defeat";
         Time.timeScale = 0;
-        enabled = false;
     }
 }

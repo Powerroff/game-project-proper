@@ -33,7 +33,7 @@ public class BulkLoader : MonoBehaviour
     private System.Diagnostics.Stopwatch watch;
     public int performingFirstLoad;
 
-    public void Setup() {
+    public void Awake() {
         instantiateQueue = new Queue<objToInstantiate>();
         activateQueue = new Queue<objToActivate>();
         watch = new System.Diagnostics.Stopwatch();
@@ -50,8 +50,9 @@ public class BulkLoader : MonoBehaviour
         watch.Reset();
         watch.Start();
         int millisecondBudget = 10;
+
         while (instantiateQueue.Count > 0 || activateQueue.Count > 0) {
-            //Debug.Log(watch.ElapsedMilliseconds);
+            
             if (watch.ElapsedMilliseconds > millisecondBudget)
                 break;
             else {

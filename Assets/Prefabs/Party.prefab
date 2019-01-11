@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1309873259}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -14.5, y: 4.5, z: -10}
-  m_LocalScale: {x: 7, y: 10, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4324671692758842}
   m_RootOrder: 0
@@ -208,11 +208,8 @@ MonoBehaviour:
   blockingLayer:
     serializedVersion: 2
     m_Bits: 1
-  staminaText: {fileID: 0}
-  healthText: {fileID: 0}
-  bullet: {fileID: 8635895661018318417, guid: b1729f44f3106ac4e85e0d58e88c609c, type: 3}
   inventory: 
-  current_deck: 0
+  currentDeck: 0
   equipment1:
   - {fileID: 5601748341407731687, guid: 1ae4cd493a0f0ff4fb39239e993e1944, type: 3}
   - {fileID: 0}
@@ -225,6 +222,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  bullet: {fileID: 8635895661018318417, guid: b1729f44f3106ac4e85e0d58e88c609c, type: 3}
   basicCard: {fileID: 11400000, guid: f90dec389efa8564fba11ea8b7480f05, type: 2}
 --- !u!50 &6262939904582599931
 Rigidbody2D:
@@ -243,7 +241,7 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0

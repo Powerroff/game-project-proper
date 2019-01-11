@@ -5,10 +5,11 @@ using UnityEngine;
 public class Enemy : MovingObject {
 
     public int damage;
-    private int health;
     public GameObject scrap;
     public Sprite defaultSprite;
     public Sprite damageSprite;
+
+    private int health;
 
     // Use this for initialization
     protected override void Start () {
@@ -25,7 +26,6 @@ public class Enemy : MovingObject {
         }
     }
 
-
     public void TakeDamage(int damage) {
         health -= damage;
         if (health <= 0) {
@@ -33,6 +33,7 @@ public class Enemy : MovingObject {
         }
         StartCoroutine(DamageAnim());
     }
+
     protected IEnumerator DamageAnim() {
         GetComponent<SpriteRenderer>().sprite = damageSprite;
         yield return new WaitForSeconds(.25f);
